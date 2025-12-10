@@ -23,6 +23,7 @@ kotlin {
     sourceSets.all {
         languageSettings {
             optIn("kotlin.time.ExperimentalTime")
+            optIn("UNIVERSAL_RESIZABLE_BY_DEFAULT")
         }
     }
 
