@@ -136,7 +136,7 @@ dependencies {
 sqldelight {
     databases {
         create("AppDatabase") {
-            packageName = "com.rch.capturelog"
+            packageName = "com.rhc.capturelog"
         }
     }
 }
