@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.bundles.ktor.common)
             implementation(libs.bundles.sqldelight.common)
             implementation(libs.bundles.arrow)
+            implementation(libs.bundles.coil)
 
             implementation(libs.navigation.compose)
             implementation(libs.material.icons.core)
