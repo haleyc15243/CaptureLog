@@ -41,11 +41,9 @@ val viewModelModule = module {
     factoryOf(::DetailViewModel)
 }
 
-fun initKoin() {
-    startKoin {
-        modules(
-            dataModule,
-            viewModelModule,
-        )
-    }
+fun initKoin(
+    appDeclaration: KoinAppDeclaration = {}
+) = startKoin {
+    appDeclaration()
+    modules(AppModule().module)
 }
