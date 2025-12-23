@@ -1,69 +1,83 @@
 package com.rhc.capturelog.core.state
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import com.rhc.capturelog.core.navigation.AppStateEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
-// Represents the global UI state that can be modified by any screen.
-data class AppUiState(
-    val title: String = "",
-    val subtitle: String = "",
-    val isBottomBarVisible: Boolean = true,
-    val isFabVisible: Boolean = true,
-    // Non-persistent state. These are reset on process death.
-    val fabAction: (() -> Unit)? = null,
-    val topBarActions: @Composable (() -> Unit)? = null
-)
-
+@KoinViewModel
 class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     companion object {
-        // Keys for SavedStateHandle
         private const val KEY_TITLE = "title"
         private const val KEY_SUBTITLE = "subtitle"
-        private const val KEY_BOTTOM_BAR_VISIBLE = "bottomBarVisible"
-        private const val KEY_FAB_VISIBLE = "fabVisible"
+        private const val KEY_SHOW_SEARCH = "show_search"
+        private const val KEY_FAB_VISIBLE = "fab_visible"
     }
 
-    private val _uiState = MutableStateFlow(
-        // Restore state from SavedStateHandle on init
-        AppUiState(
-            title = savedStateHandle.get<String>(KEY_TITLE) ?: "",
-            subtitle = savedStateHandle.get<String>(KEY_SUBTITLE) ?: "",
-            isBottomBarVisible = savedStateHandle.get<Boolean>(KEY_BOTTOM_BAR_VISIBLE) ?: true,
-            isFabVisible = savedStateHandle.get<Boolean>(KEY_FAB_VISIBLE) ?: true
+    private val titleFlow = savedStateHandle.getStateFlow(KEY_TITLE, "")
+    private val subtitleFlow = savedStateHandle.getStateFlow(KEY_SUBTITLE, "")
+    private val showSearchFlow = savedStateHandle.getStateFlow(KEY_SHOW_SEARCH, true)
+    private val fabVisibleFlow = savedStateHandle.getStateFlow(KEY_FAB_VISIBLE, true)
+
+    val uiState = combine(
+        titleFlow,
+        subtitleFlow,
+        showSearchFlow,
+        fabVisibleFlow
+    ) { title, subtitle, showSearch, fabVisible ->
+        AppState(
+            topAppBarState = TopAppBarState(
+                title = title.ifEmpty { null },
+                subtitle = subtitle.ifEmpty { null },
+                showSearchTopBarIcon = showSearch
+            ),
+            isFabVisible = fabVisible
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = AppState()
     )
-    val uiState = _uiState.asStateFlow()
 
-    fun setTitle(title: String, subtitle: String = "") {
+    private val _topBarEvents = MutableSharedFlow<AppStateEvent>()
+    val appStateEvents = _topBarEvents.asSharedFlow()
+
+    fun updateState(block: AppState.() -> AppState) {
+        val currentState = uiState.value
+        val newState = currentState.block()
+
+        savedStateHandle[KEY_TITLE] = newState.topAppBarState.title ?: ""
+        savedStateHandle[KEY_SUBTITLE] = newState.topAppBarState.subtitle ?: ""
+        savedStateHandle[KEY_SHOW_SEARCH] = newState.topAppBarState.showSearchTopBarIcon
+        savedStateHandle[KEY_FAB_VISIBLE] = newState.isFabVisible
+    }
+
+    fun setTitle(title: String, subtitle: String? = null) {
         savedStateHandle[KEY_TITLE] = title
-        savedStateHandle[KEY_SUBTITLE] = subtitle
-        _uiState.update { it.copy(title = title, subtitle = subtitle) }
+        if (subtitle != null) {
+            savedStateHandle[KEY_SUBTITLE] = subtitle
+        }
     }
-
-    fun showBottomBar(isVisible: Boolean) {
-        savedStateHandle[KEY_BOTTOM_BAR_VISIBLE] = isVisible
-        _uiState.update { it.copy(isBottomBarVisible = isVisible) }
-    }
-
+    
     fun showFab(isVisible: Boolean, action: (() -> Unit)? = null) {
         savedStateHandle[KEY_FAB_VISIBLE] = isVisible
-        // Actions are not saved as they are transient UI concerns.
-        _uiState.update { it.copy(isFabVisible = isVisible, fabAction = action) }
+    }
+    
+    fun setTopBarActions(actions: (@androidx.compose.runtime.Composable () -> Unit)?) {
+         // Actions are not persistent state
     }
 
-    fun setTopBarActions(actions: (@Composable () -> Unit)?) {
-        // Actions are not saved.
-        _uiState.update { it.copy(topBarActions = actions) }
+    fun emitAppStateEvent(event: AppStateEvent) {
+        viewModelScope.launch {
+            _topBarEvents.emit(event)
+        }
     }
-}
-
-// CompositionLocal to provide the AppViewModel throughout the app
-val LocalAppViewModel = staticCompositionLocalOf<AppViewModel> {
-    error("No AppViewModel provided. Make sure to wrap your app in a CompositionLocalProvider.")
 }
