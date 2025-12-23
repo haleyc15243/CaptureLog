@@ -1,6 +1,5 @@
 package com.rhc.capturelog.database
 
-import android.content.Context
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import coil3.PlatformContext

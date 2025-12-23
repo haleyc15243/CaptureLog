@@ -5,6 +5,9 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.toRoute
 import capturelog.composeapp.generated.resources.Res
 import capturelog.composeapp.generated.resources.label_queue
 import capturelog.composeapp.generated.resources.label_settings
@@ -12,6 +15,7 @@ import capturelog.composeapp.generated.resources.label_today
 import com.rhc.capturelog.core.navigation.Destination.Queue
 import com.rhc.capturelog.core.navigation.Destination.Settings
 import com.rhc.capturelog.core.navigation.Destination.Today
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 
