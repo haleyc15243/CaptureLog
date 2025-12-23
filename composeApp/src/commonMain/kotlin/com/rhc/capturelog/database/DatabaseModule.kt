@@ -7,11 +7,6 @@ import org.koin.core.annotation.Single
 @Module
 class DatabaseModule {
     @Single
-    fun providesDatabaseDriver(
-        factory: DatabaseDriverFactory
-    ) = factory.createDriver()
-
-    @Single
     fun provideDatabaseFactory(
         driverFactory: DatabaseDriverFactory
     ): DatabaseFactory = DatabaseFactory(driverFactory)
