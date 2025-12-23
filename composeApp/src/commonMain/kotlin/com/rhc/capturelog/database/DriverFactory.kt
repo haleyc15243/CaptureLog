@@ -2,6 +2,6 @@ package com.rhc.capturelog.database
 
 import app.cash.sqldelight.db.SqlDriver
 
-interface DatabaseDriverFactory {
+expect class DatabaseDriverFactory {
     fun createDriver(): SqlDriver
 }
