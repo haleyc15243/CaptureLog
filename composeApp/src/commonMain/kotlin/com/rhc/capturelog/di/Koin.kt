@@ -1,45 +1,8 @@
 package com.rhc.capturelog.di
 
-import com.rhc.capturelog.data.InMemoryMuseumStorage
-import com.rhc.capturelog.data.KtorMuseumApi
-import com.rhc.capturelog.data.MuseumApi
-import com.rhc.capturelog.data.MuseumRepository
-import com.rhc.capturelog.data.MuseumStorage
-import com.rhc.capturelog.screens.detail.DetailViewModel
-import com.rhc.capturelog.screens.list.ListViewModel
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.ContentType
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.factoryOf
-import org.koin.dsl.module
-
-val dataModule = module {
-    single {
-        val json = Json { ignoreUnknownKeys = true }
-        HttpClient {
-            install(ContentNegotiation) {
-                // TODO Fix API so it serves application/json
-                json(json, contentType = ContentType.Any)
-            }
-        }
-    }
-
-    single<MuseumApi> { KtorMuseumApi(get()) }
-    single<MuseumStorage> { InMemoryMuseumStorage() }
-    single {
-        MuseumRepository(get(), get()).apply {
-            initialize()
-        }
-    }
-}
-
-val viewModelModule = module {
-    factoryOf(::ListViewModel)
-    factoryOf(::DetailViewModel)
-}
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.ksp.generated.module
 
 fun initKoin(
     appDeclaration: KoinAppDeclaration = {}

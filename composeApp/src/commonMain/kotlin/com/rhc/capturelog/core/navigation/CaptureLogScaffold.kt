@@ -25,7 +25,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
 import org.jetbrains.compose.resources.stringResource
 import capturelog.composeapp.generated.resources.Res
 import capturelog.composeapp.generated.resources.back
