@@ -62,9 +62,7 @@ class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel()
 
     fun setTitle(title: String, subtitle: String? = null) {
         savedStateHandle[KEY_TITLE] = title
-        if (subtitle != null) {
-            savedStateHandle[KEY_SUBTITLE] = subtitle
-        }
+        savedStateHandle[KEY_SUBTITLE] = subtitle ?: ""
     }
     
     fun showFab(isVisible: Boolean, action: (() -> Unit)? = null) {
