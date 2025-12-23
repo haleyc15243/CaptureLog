@@ -66,7 +66,9 @@ fun CaptureLogScaffold(
             )
         },
         floatingActionButton = {
-            CaptureLogFAB { appViewModel.emitAppStateEvent(FABClicked) }
+            if (appState.value.isFabVisible) {
+                CaptureLogFAB { appViewModel.emitAppStateEvent(FABClicked) }
+            }
         },
         bottomBar = {
             if (isTopLevelDestination) {
