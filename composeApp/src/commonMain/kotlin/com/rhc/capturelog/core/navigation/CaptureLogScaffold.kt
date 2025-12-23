@@ -1,5 +1,6 @@
 package com.rhc.capturelog.core.navigation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -93,20 +94,22 @@ private fun CaptureLogTopAppBar(
 ) {
     TopAppBar(
         title = {
-            state.title?.let {
-                Text(
-                    text = it,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-            state.subtitle?.let {
-                Text(
-                    text = it,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+            Column {
+                state.title?.let {
+                    Text(
+                        text = it,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                state.subtitle?.let {
+                    Text(
+                        text = it,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         },
         actions = {
