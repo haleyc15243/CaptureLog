@@ -63,6 +63,7 @@ sealed class Destination {
     }
 
     @Serializable
+    @SerialName("onboarding")
     data object Onboarding : Destination() {
         override val navigationTitleRes: StringResource?
             get() = null
@@ -72,12 +73,14 @@ sealed class Destination {
      * Top level destination for fantasy.
      */
     @Serializable
+    @SerialName("today")
     data object Today : Destination() {
         override val navigationTitleRes
             get() = Res.string.label_today
     }
 
     @Serializable
+    @SerialName("queue")
     data object Queue : Destination() {
         override val navigationTitleRes
             get() = Res.string.label_queue
@@ -85,6 +88,7 @@ sealed class Destination {
 
 
     @Serializable
+    @SerialName("settings")
     data class Settings(val currentFilter: String = Filter.NONE.name) : Destination() {
         constructor(filter: Filter) : this(filter.name)
 
@@ -100,22 +104,29 @@ sealed class Destination {
 
 fun Destination.isTopLevelDestination() = this in Destination.topLevelDestinations
 
-
 enum class BottomNavigationItem(val label: StringResource, val icon: ImageVector, val route: Destination) {
     TODAY(Res.string.label_today, Icons.Default.Home, Today),
     QUEUE(Res.string.label_queue, Icons.AutoMirrored.Filled.List, Queue),
     SETTINGS(Res.string.label_settings, Icons.Default.Settings, Settings())
 }
 
-fun BottomNavigationItem.toDestination() = when (this) {
-    BottomNavigationItem.TODAY -> Destination.Today
-    BottomNavigationItem.QUEUE -> Destination.Queue
-    BottomNavigationItem.SETTINGS -> Destination.Settings
-}
+fun BottomNavigationItem.toDestination() = this.route
 
 fun Destination.toBottomNavigationItem() = when (this) {
     Today -> BottomNavigationItem.TODAY
     Queue -> BottomNavigationItem.QUEUE
-    Settings -> BottomNavigationItem.SETTINGS
+    is Settings -> BottomNavigationItem.SETTINGS
     else -> throw IllegalArgumentException("Unknown bottom nav destination: $this")
+}
+
+inline fun <reified T : Any> NavBackStackEntry.toDestinationOrNull(): T? {
+    val dest = destination
+
+    // Find the first class in our list that matches the current route
+    val matchedDestination = Destination.allDestinations.find { destination ->
+        dest.hasRoute(destination::class)
+    } ?: return null
+
+    // Use the matched class to extract the route object
+    return this.toRoute(matchedDestination::class) as? T
 }
