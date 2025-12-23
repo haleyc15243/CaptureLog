@@ -47,12 +47,6 @@ fun CaptureLogScaffold(
     val currentDestination: Destination? = remember(navBackStackEntry) {
         navBackStackEntry?.toDestinationOrNull()
     }
-    LaunchedEffect(navBackStackEntry, currentDestination) {
-        println("=== NavBackStackEntry changed ===")
-        println("Entry: $navBackStackEntry")
-        println("Route: ${navBackStackEntry?.destination?.route}")
-        println("other dest $currentDestination")
-    }
     currentDestination?.navigationTitleRes?.let { titleRes ->
         val title = stringResource(titleRes)
         LaunchedEffect(title) {
@@ -72,7 +66,9 @@ fun CaptureLogScaffold(
             )
         },
         floatingActionButton = {
-            CaptureLogFAB { appViewModel.emitAppStateEvent(FABClicked) }
+            if (appState.value.isFabVisible) {
+                CaptureLogFAB { appViewModel.emitAppStateEvent(FABClicked) }
+            }
         },
         bottomBar = {
             if (isTopLevelDestination) {
