@@ -1,0 +1,53 @@
+import com.rhc.capturelog.data.DailyNoteType;
+import com.rhc.capturelog.data.Tag;
+import kotlin.time.Instant;
+import kotlin.uuid.Uuid;
+
+CREATE TABLE daily_note (
+    note_id TEXT AS Uuid NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    type INTEGER AS DailyNoteType NOT NULL,
+    content TEXT,
+    timestamp INTEGER AS Instant NOT NULL
+);
+
+CREATE TABLE note_tag (
+    note_id TEXT AS Uuid NOT NULL,
+    tag TEXT AS Tag NOT NULL,
+    FOREIGN KEY (note_id) REFERENCES daily_note(note_id) ON DELETE CASCADE
+);
+
+insertNote:
+INSERT INTO daily_note (
+    note_id,
+    title,
+    type,
+    content,
+    timestamp
+) VALUES (
+    ?, ?, ?, ?, ?
+);
+
+insertTag:
+INSERT INTO note_tag (
+    note_id,
+    tag
+) VALUES (
+    ?, ?
+);
+
+selectNote:
+SELECT * FROM daily_note
+WHERE note_id = ?;
+
+selectTagsByNoteId:
+SELECT tag -- We only need the tag itself
+FROM note_tag
+WHERE note_id = ?;
+
+selectAllNotes:
+SELECT * FROM daily_note;
+
+deleteNote:
+DELETE FROM daily_note
+WHERE note_id = ?;
