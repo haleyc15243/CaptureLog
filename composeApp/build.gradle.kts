@@ -43,13 +43,13 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.accompanist.permissions)
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.ktor.client.okhttp)
             implementation(libs.bundles.sqldelight.android)
             implementation(libs.bundles.compose.androidx)
             implementation(libs.bundles.ktor.android)
-            implementation(libs.accompanist.permissions)
+            implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
         }
         iosMain.dependencies {
