@@ -1,17 +1,17 @@
 package com.rhc.capturelog
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.navigation.compose.rememberNavController
 import com.rhc.capturelog.core.navigation.CaptureLogNavigation
+import com.rhc.capturelog.core.navigation.CaptureLogScaffold
+import com.rhc.capturelog.ui.theme.CaptureLogTheme
 
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    ) {
-        CaptureLogNavigation()
+    CaptureLogTheme {
+        val navController = rememberNavController()
+        CaptureLogScaffold(navController) { paddingValues ->
+            CaptureLogNavigation(paddingValues, navController)
+        }
     }
 }

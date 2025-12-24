@@ -38,27 +38,11 @@ CaptureLog-Project/
 
 ## Tech Stack
 
-### Multiplatform (commonMain)
+### Utilizes (commonMain)
 - Kotlin 2.1.x
-- SQLDelight (database)
-- Koin (dependency injection)
-- kotlinx.datetime (date/time)
-- kotlinx.serialization (JSON)
-- Coroutines + Flow
-- Ktor (if RSS integration added later)
-
-### Android (androidMain)
-- Jetpack Compose
-- Material 3
-- Navigation Compose
-
-### iOS (iosMain)
-- SwiftUI or Compose Multiplatform
-- (TBD based on preference)
-
-## Quick Start
-
-See `docs/04-Implementation-Guide.md` for step-by-step setup instructions.
+- SQLDelight
+- Koin Annotations
+- kotlinx.datetime
 
 ## Key Features
 
@@ -67,22 +51,5 @@ See `docs/04-Implementation-Guide.md` for step-by-step setup instructions.
 3. **Action Queue** - Prioritized list of items to try/learn/do
 4. **Search & Filter** - Full-text search across all data
 5. **Tag Management** - Organize and categorize captures
-
-## Why This Project?
-
-- **Real Problem:** You'll actually use it daily
-- **Modern Stack:** Showcases KMP, SQLDelight, Koin, Compose
-- **Flexible Architecture:** Template system demonstrates extensibility
-- **Portfolio Quality:** Production-ready code with tests
-- **Learning Opportunity:** RSS integration, background sync (future)
-
-## Next Steps
-
-1. Review `docs/01-Project-Overview.md` for high-level design
-2. Check `docs/02-Architecture.md` for system architecture
-3. Follow `docs/04-Implementation-Guide.md` to start building
-4. Reference `docs/05-Development-Roadmap.md` for milestones
-
----
 
 Built with ❤️ and Kotlin

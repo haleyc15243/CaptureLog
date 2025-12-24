@@ -50,6 +50,7 @@ kotlin {
             implementation(libs.bundles.compose.androidx)
             implementation(libs.bundles.ktor.android)
             implementation(libs.accompanist.permissions)
+            implementation(libs.koin.android)
         }
         iosMain.dependencies {
             implementation(libs.bundles.ktor.ios)
@@ -83,25 +84,30 @@ kotlin {
             implementation(libs.store)
         }
 
+        // KSP Common sourceSet
         sourceSets.named("commonMain").configure {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
     }
 }
 
+// KSP Tasks
+dependencies {
+    add("kspCommonMainMetadata", libs.koin.ksp.compiler)
+    add("kspAndroid", libs.koin.ksp.compiler)
+    add("kspIosX64", libs.koin.ksp.compiler)
+    add("kspIosArm64", libs.koin.ksp.compiler)
+    add("kspIosSimulatorArm64", libs.koin.ksp.compiler)
+}
+
+// KSP Metadata Trigger
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+}
+
 ksp {
     arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
     arg("KOIN_CONFIG_CHECK","true")
-}
-
-dependencies {
-    add("kspCommonMainMetadata", libs.koin.ksp.compiler)
-}
-
-project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
 }
 
 android {
@@ -129,11 +135,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    dependencies {
+        debugImplementation(libs.androidx.compose.ui.tooling)
+    }
 }
 
-dependencies {
-    debugImplementation(libs.androidx.compose.ui.tooling)
-}
 
 sqldelight {
     databases {
