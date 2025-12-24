@@ -65,7 +65,7 @@ class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel()
         savedStateHandle[KEY_SUBTITLE] = subtitle ?: ""
     }
     
-    fun showFab(isVisible: Boolean, action: (() -> Unit)? = null) {
+    fun showFab(isVisible: Boolean) {
         savedStateHandle[KEY_FAB_VISIBLE] = isVisible
     }
     
