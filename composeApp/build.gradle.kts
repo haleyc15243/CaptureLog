@@ -17,6 +17,7 @@ kotlin {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xcontext-parameters")
         }
     }
 
@@ -24,6 +25,7 @@ kotlin {
         languageSettings {
             optIn("kotlin.time.ExperimentalTime")
             optIn("kotlin.uuid.ExperimentalUuidApi")
+            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
             optIn("UNIVERSAL_RESIZABLE_BY_DEFAULT")
         }
     }
