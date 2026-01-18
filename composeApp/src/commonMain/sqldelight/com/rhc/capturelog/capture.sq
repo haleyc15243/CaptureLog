@@ -1,0 +1,83 @@
+import com.rhc.capturelog.data.dailynote.Capture;
+import com.rhc.capturelog.data.dailynote.CaptureTemplate;
+import com.rhc.capturelog.data.dailynote.DailyNote;
+import com.rhc.capturelog.data.dailynote.Tag;
+import kotlin.time.Instant;
+
+CREATE TABLE IF NOT EXISTS capture (
+    id TEXT AS Capture.Id PRIMARY KEY NOT NULL,
+    dailyNoteId TEXT AS DailyNote.Id NOT NULL,
+    timestamp INTEGER AS Instant NOT NULL,
+    templateId TEXT AS CaptureTemplate.Id NOT NULL,
+    title TEXT NOT NULL,
+    fieldsJson TEXT NOT NULL,  -- JSON map of field values
+    FOREIGN KEY (dailyNoteId) REFERENCES daily_note(id) ON DELETE CASCADE,
+    FOREIGN KEY (templateId) REFERENCES capture_template(id)
+);
+
+CREATE INDEX idx_capture_dailynote ON capture(dailyNoteId);
+CREATE INDEX idx_capture_timestamp ON capture(timestamp);
+CREATE INDEX idx_capture_template ON capture(templateId);
+
+selectAll:
+SELECT * FROM capture;
+
+selectByDailyNote:
+SELECT * FROM capture
+WHERE dailyNoteId = ?
+ORDER BY timestamp ASC;
+
+selectById:
+SELECT * FROM capture
+WHERE id = ?;
+
+insert:
+INSERT INTO capture(
+    id,
+    dailyNoteId,
+    timestamp,
+    templateId,
+    title,
+    fieldsJson
+) VALUES (
+?, ?, ?, ?, ?, ?
+);
+
+update:
+UPDATE capture
+SET title = ?, fieldsJson = ?, timestamp = ?
+WHERE id = ?;
+
+delete:
+DELETE FROM capture WHERE id = ?;
+
+CREATE TABLE IF NOT EXISTS capture_tag (
+    captureId TEXT AS Capture.Id NOT NULL,
+    tagId TEXT AS Tag.Id NOT NULL,
+    PRIMARY KEY (captureId, tagId),
+    FOREIGN KEY (captureId) REFERENCES capture(id) ON DELETE CASCADE,
+    FOREIGN KEY (tagId) REFERENCES tag(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_capturetag_tag ON capture_tag(tagId);
+
+selectTagByCaptureId:
+SELECT tagId
+FROM capture_tag
+WHERE captureId = ?;
+
+selectTagById:
+SELECT captureId
+FROM capture_tag
+WHERE tagId = ?;
+
+insertTag:
+INSERT OR IGNORE INTO capture_tag(
+    captureId,
+    tagId
+) VALUES (
+?, ?
+);
+
+deleteTagForCapture:
+DELETE FROM capture_tag WHERE captureId = ?;

@@ -1,53 +1,29 @@
-import com.rhc.capturelog.data.DailyNoteType;
-import com.rhc.capturelog.data.Tag;
+import com.rhc.capturelog.data.dailynote.DailyNote;
 import kotlin.time.Instant;
-import kotlin.uuid.Uuid;
 
-CREATE TABLE daily_note (
-    note_id TEXT AS Uuid NOT NULL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS daily_note (
+    id TEXT AS DailyNote.Id PRIMARY KEY NOT NULL,
+    date INTEGER AS Instant NOT NULL,
     title TEXT NOT NULL,
-    type INTEGER AS DailyNoteType NOT NULL,
-    content TEXT,
-    timestamp INTEGER AS Instant NOT NULL
+    createdAt INTEGER AS Instant NOT NULL,
+    updatedAt INTEGER AS Instant NOT NULL,
+    UNIQUE(date)
 );
 
-CREATE TABLE note_tag (
-    note_id TEXT AS Uuid NOT NULL,
-    tag TEXT AS Tag NOT NULL,
-    FOREIGN KEY (note_id) REFERENCES daily_note(note_id) ON DELETE CASCADE
-);
+CREATE INDEX idx_dailynote_date ON daily_note(date);
 
-insertNote:
-INSERT INTO daily_note (
-    note_id,
-    title,
-    type,
-    content,
-    timestamp
-) VALUES (
-    ?, ?, ?, ?, ?
-);
-
-insertTag:
-INSERT INTO note_tag (
-    note_id,
-    tag
-) VALUES (
-    ?, ?
-);
-
-selectNote:
-SELECT * FROM daily_note
-WHERE note_id = ?;
-
-selectTagsByNoteId:
-SELECT tag -- We only need the tag itself
-FROM note_tag
-WHERE note_id = ?;
-
-selectAllNotes:
+selectAll:
 SELECT * FROM daily_note;
 
-deleteNote:
-DELETE FROM daily_note
-WHERE note_id = ?;
+selectByDate:
+SELECT * FROM daily_note WHERE date = ?;
+
+selectRecent:
+SELECT * FROM daily_note ORDER BY date DESC LIMIT ?;
+
+insert:
+INSERT OR REPLACE INTO daily_note(id, date, title, createdAt, updatedAt)
+VALUES (?, ?, ?, ?, ?);
+
+updateReflections:
+UPDATE daily_note SET updatedAt = ? WHERE id = ?;

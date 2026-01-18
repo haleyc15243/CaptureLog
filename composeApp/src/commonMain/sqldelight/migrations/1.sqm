@@ -1,0 +1,78 @@
+import com.rhc.capturelog.data.dailynote.Capture;
+import com.rhc.capturelog.data.dailynote.CaptureTemplate;
+import com.rhc.capturelog.data.dailynote.DailyNote;
+import com.rhc.capturelog.data.dailynote.Tag;
+import com.rhc.capturelog.data.dailynote.TagColor;
+import com.rhc.capturelog.data.todo.QueueStatus;
+import com.rhc.capturelog.data.todo.TodoItem;
+import kotlin.time.Instant;
+
+CREATE TABLE IF NOT EXISTS todo_item (
+    id TEXT AS TodoItem.Id PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    source TEXT NOT NULL,
+    priority INTEGER NOT NULL DEFAULT 0,
+    status INTEGER AS QueueStatus NOT NULL,
+    dateAdded INTEGER AS Instant NOT NULL,
+    notes TEXT NOT NULL DEFAULT '',
+    completedAt INTEGER AS Instant,
+    metadataJson TEXT NOT NULL DEFAULT '{}'
+);
+
+CREATE TABLE IF NOT EXISTS tag (
+    id TEXT AS Tag.Id PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    color INTEGER AS TagColor NOT NULL,
+    usageCount INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS queue_tag (
+    queueItemId TEXT AS TodoItem.Id NOT NULL,
+    tagId TEXT AS Tag.Id NOT NULL,
+    PRIMARY KEY (queueItemId, tagId),
+    FOREIGN KEY (queueItemId) REFERENCES todo_item(id) ON DELETE CASCADE,
+    FOREIGN KEY (tagId) REFERENCES tag(id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS daily_note;
+
+CREATE TABLE IF NOT EXISTS daily_note (
+    id TEXT AS DailyNote.Id PRIMARY KEY NOT NULL,
+    date INTEGER AS Instant NOT NULL,
+    title TEXT NOT NULL,
+    createdAt INTEGER AS Instant NOT NULL,
+    updatedAt INTEGER AS Instant NOT NULL,
+    UNIQUE(date)
+);
+
+CREATE TABLE IF NOT EXISTS capture_template (
+    id TEXT AS CaptureTemplate.Id PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    icon TEXT NOT NULL,
+    color TEXT NOT NULL,
+    fieldsJson TEXT NOT NULL,  -- JSON array of TemplateField
+    isDefault INTEGER NOT NULL DEFAULT 0,
+    isArchived INTEGER NOT NULL DEFAULT 0,
+    createdAt INTEGER AS Instant NOT NULL,
+    updatedAt INTEGER AS Instant NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS capture (
+    id TEXT AS Capture.Id PRIMARY KEY NOT NULL,
+    dailyNoteId TEXT AS DailyNote.Id NOT NULL,
+    timestamp INTEGER AS Instant NOT NULL,
+    templateId TEXT AS CaptureTemplate.Id NOT NULL,
+    title TEXT NOT NULL,
+    fieldsJson TEXT NOT NULL,  -- JSON map of field values
+    FOREIGN KEY (dailyNoteId) REFERENCES daily_note(id) ON DELETE CASCADE,
+    FOREIGN KEY (templateId) REFERENCES capture_template(id)
+);
+
+CREATE TABLE IF NOT EXISTS capture_tag (
+    captureId TEXT AS Capture.Id NOT NULL,
+    tagId TEXT AS Tag.Id NOT NULL,
+    PRIMARY KEY (captureId, tagId),
+    FOREIGN KEY (captureId) REFERENCES capture(id) ON DELETE CASCADE,
+    FOREIGN KEY (tagId) REFERENCES tag(id) ON DELETE CASCADE
+);

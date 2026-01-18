@@ -1,0 +1,67 @@
+import com.rhc.capturelog.data.dailynote.Tag;
+import com.rhc.capturelog.data.todo.QueueStatus;
+import com.rhc.capturelog.data.todo.TodoItem;
+import kotlin.time.Instant;
+
+CREATE TABLE IF NOT EXISTS todo_item (
+    id TEXT AS TodoItem.Id PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    source TEXT NOT NULL,
+    priority INTEGER NOT NULL DEFAULT 0,
+    status INTEGER AS QueueStatus NOT NULL,
+    dateAdded INTEGER AS Instant NOT NULL,
+    notes TEXT NOT NULL DEFAULT '',
+    completedAt INTEGER AS Instant,
+    metadataJson TEXT NOT NULL DEFAULT '{}'
+);
+
+CREATE INDEX idx_queue_status ON todo_item(status);
+CREATE INDEX idx_queue_priority ON todo_item(priority);
+
+selectActive:
+SELECT * FROM todo_item
+WHERE status != 3 -- ARCHIVED
+ORDER BY priority DESC, dateAdded ASC;
+
+selectByStatus:
+SELECT * FROM todo_item
+WHERE status = ?
+ORDER BY priority DESC, dateAdded ASC;
+
+selectById:
+SELECT * FROM todo_item WHERE id = ?;
+
+insert:
+INSERT INTO todo_item(
+    id,
+    title,
+    description,
+    source,
+    priority,
+    status,
+    dateAdded,
+    notes,
+    completedAt,
+    metadataJson
+) VALUES (
+?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+);
+
+update:
+UPDATE todo_item
+SET title = ?, description = ?, priority = ?, status = ?, notes = ?, completedAt = ?, metadataJson = ?
+WHERE id = ?;
+
+delete:
+DELETE FROM todo_item WHERE id = ?;
+
+CREATE TABLE IF NOT EXISTS queue_tag (
+    queueItemId TEXT AS TodoItem.Id NOT NULL,
+    tagId TEXT AS Tag.Id NOT NULL,
+    PRIMARY KEY (queueItemId, tagId),
+    FOREIGN KEY (queueItemId) REFERENCES todo_item(id) ON DELETE CASCADE,
+    FOREIGN KEY (tagId) REFERENCES tag(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_queuetag_tag ON queue_tag(tagId);
