@@ -1,15 +1,9 @@
 package com.rhc.capturelog.di
 
 import com.rhc.capturelog.database.DatabaseDriverFactory
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import com.rhc.capturelog.database.IosDatabaseDriverFactory
+import org.koin.dsl.module
 
-@Module
-@ComponentScan("com.rhc.capturelog")
-actual class PlatformModule {
-    @Single
-    actual fun provideDatabaseDriverFactory(): DatabaseDriverFactory {
-        return DatabaseDriverFactory()
-    }
+internal actual val platformModule = module {
+    single<DatabaseDriverFactory> { IosDatabaseDriverFactory() }
 }
