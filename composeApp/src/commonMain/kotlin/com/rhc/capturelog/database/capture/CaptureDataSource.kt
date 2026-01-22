@@ -8,9 +8,9 @@ import com.rhc.capturelog.Capture_template as DbCaptureTemplate
 import com.rhc.capturelog.Capture_templateQueries
 import com.rhc.capturelog.Daily_noteQueries
 import com.rhc.capturelog.TagQueries
-import com.rhc.capturelog.data.dailynote.Capture
-import com.rhc.capturelog.data.dailynote.CaptureTemplate
-import com.rhc.capturelog.data.dailynote.Tag
+import com.rhc.capturelog.data.capture.Capture
+import com.rhc.capturelog.data.capture.CaptureTemplate
+import com.rhc.capturelog.data.capture.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json

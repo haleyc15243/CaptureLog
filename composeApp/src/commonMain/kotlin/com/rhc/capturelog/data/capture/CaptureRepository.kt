@@ -1,4 +1,4 @@
-package com.rhc.capturelog.data.dailynote
+package com.rhc.capturelog.data.capture
 
 import com.rhc.capturelog.database.dailyNote.CaptureDataSource
 import kotlinx.coroutines.CoroutineScope
