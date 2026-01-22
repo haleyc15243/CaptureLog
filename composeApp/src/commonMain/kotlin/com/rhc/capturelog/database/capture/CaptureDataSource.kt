@@ -1,4 +1,4 @@
-package com.rhc.capturelog.database.dailyNote
+package com.rhc.capturelog.database.capture
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -78,6 +78,7 @@ internal class CaptureDataSourceImpl(
         return CaptureTemplate(
             id = id,
             name = name,
+            description = description,
             icon = icon,
             color = color,
             fields = json.decodeFromString(fieldsJson),

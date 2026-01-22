@@ -22,7 +22,8 @@ import kotlin.uuid.Uuid
 data class CaptureTemplate(
     val id: Id,
     val name: String,
-    val icon: String,
+    val description: String,
+    val icon: TemplateIcon,
     @Serializable(with = ColorLongSerializer::class)
     val color: Color,
     val fields: List<TemplateField>,
@@ -34,6 +35,7 @@ data class CaptureTemplate(
     @JvmInline
     @Serializable
     value class Id(val value: Uuid) {
+        constructor() : this(Uuid.random())
         constructor(stringVal: String) : this (UuidUtils.stringToUuid(stringVal))
     }
 }
@@ -102,11 +104,12 @@ object ColorLongSerializer : KSerializer<Color> {
     }
 }
 
-object DefaultCaptureTemplates {
-    val QuickNotes = CaptureTemplate(
+object CaptureTemplateDefaults {
+    val QuickNote = CaptureTemplate(
         id = CaptureTemplate.Id("quick-note"),
         name = "Quick Note",
-        icon = "edit",
+        description = "Fast capture",
+        icon = TemplateIcon.QUICK_NOTE,
         color = IndigoLightMode,
         fields = listOf(
             TemplateField(
@@ -121,7 +124,8 @@ object DefaultCaptureTemplates {
     val CodeReview = CaptureTemplate(
         id = CaptureTemplate.Id("code-review"),
         name = "Code Review",
-        icon = "code",
+        description = "PR Feedback",
+        icon = TemplateIcon.CODE_REVIEW,
         color = EmeraldLightMode,
         fields = listOf(
             TemplateField(
@@ -148,7 +152,8 @@ object DefaultCaptureTemplates {
     val ArticleLink = CaptureTemplate(
         id = CaptureTemplate.Id("article"),
         name = "Article",
-        icon = "link",
+        description = "Save links",
+        icon = TemplateIcon.ARTICLE,
         color = AmberLightMode,
         fields = listOf(
             TemplateField(
@@ -183,7 +188,8 @@ object DefaultCaptureTemplates {
     val Learning = CaptureTemplate(
         id = CaptureTemplate.Id("learning"),
         name = "Learning",
-        icon = "lightbulb",
+        description = "Document experiments",
+        icon = TemplateIcon.LEARNING,
         color = VioletDarkMode,
         fields = listOf(
             TemplateField(
