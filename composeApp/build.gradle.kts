@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
         }
+
         iosMain.dependencies {
             implementation(libs.bundles.ktor.ios)
             implementation(libs.bundles.sqldelight.ios)
