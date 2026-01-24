@@ -77,7 +77,7 @@ class DatabaseFactory(driverFactory: DatabaseDriverFactory) {
 
     private val database by lazy { createDatabase(driverFactory.createDriver()) }
 
-    internal fun dailyNoteDataSource(
+    internal fun captureDataSource(
         ioDispatcher: CoroutineDispatcher
     ): CaptureDataSource = CaptureDataSourceImpl(
         database.captureQueries,

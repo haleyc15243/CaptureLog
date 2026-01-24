@@ -18,8 +18,8 @@ class DatabaseModule {
     ): DatabaseFactory = DatabaseFactory(driverFactory)
 
     @Single
-    fun provideDailyNoteDataSource(
+    fun provideCaptureDataSource(
         @IODispatcher ioDispatcher: CoroutineDispatcher,
         databaseFactory: DatabaseFactory
-    ): CaptureDataSource = databaseFactory.dailyNoteDataSource(ioDispatcher)
+    ): CaptureDataSource = databaseFactory.captureDataSource(ioDispatcher)
 }
