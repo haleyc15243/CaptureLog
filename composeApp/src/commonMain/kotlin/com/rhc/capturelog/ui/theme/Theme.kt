@@ -2,6 +2,7 @@ package com.rhc.capturelog.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -12,17 +13,17 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = CaptureLogIndigo,
-    primaryContainer = CaptureLogIndigoLight,
-    onPrimaryContainer = CaptureLogIndigo,
+    primary = IndigoLightMode,
+    primaryContainer = IndigoSurfaceLight,
+    onPrimaryContainer = IndigoLightMode,
     secondary = CaptureLogGrayTextSecondary,
-    background = CaptureLogGrayBg,
-    onSurface = CaptureLogGrayText,
-    outline = CaptureLogGrayBorder
+    background = GrayBg,
+    onSurface = GrayText,
+    outline = GrayBorder
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = CaptureLogIndigo,
+    primary = IndigoDarkMode,
     primaryContainer = DarkGraySurface,
     onPrimaryContainer = LightGrayText,
     secondary = LightGrayText,
@@ -32,21 +33,23 @@ private val DarkColorScheme = darkColorScheme(
     outline = DarkGrayOutline
 )
 
-
 @Immutable
 data class ExtendedColors(
-    val codeReviewGreen: Color,
-    val articleYellow: Color,
+    val emerald: Color,
+    val amber: Color,
+    val violet: Color
 )
 
 val LightExtendedColors = ExtendedColors(
-    codeReviewGreen = CodeReviewGreenLightMode,
-    articleYellow = ArticleYellowLightMode,
+    emerald = EmeraldLightMode,
+    amber = AmberLightMode,
+    violet = VioletLightMode
 )
 
 val DarkExtendedColors = ExtendedColors(
-    codeReviewGreen = CodeReviewGreenDarkMode,
-    articleYellow = ArticleYellowDarkMode,
+    emerald = EmeraldDarkMode,
+    amber = AmberDarkMode,
+    violet = VioletDarkMode
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -54,13 +57,11 @@ val LocalExtendedColors = staticCompositionLocalOf {
 }
 
 object CaptureLogExtendedTheme {
-    val colorScheme: ExtendedColors
+    val colors: ExtendedColors
         @Composable
         @ReadOnlyComposable
         get() = LocalExtendedColors.current
 }
-
-
 
 @Composable
 fun CaptureLogTheme(
@@ -69,13 +70,17 @@ fun CaptureLogTheme(
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val extendedColors = if (darkTheme) DarkExtendedColors else LightExtendedColors
+    val spacing = Spacing()
 
     CompositionLocalProvider(
-        LocalExtendedColors provides extendedColors
+        LocalExtendedColors provides extendedColors,
+        LocalSpacing provides spacing
     ) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            content = content
-        )
+        Surface {
+            MaterialTheme(
+                colorScheme = colorScheme,
+                content = content
+            )
+        }
     }
 }
