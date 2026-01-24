@@ -1,8 +1,18 @@
 package com.rhc.capturelog.database.common
 
+import androidx.compose.ui.graphics.Color
 import app.cash.sqldelight.ColumnAdapter
+import com.rhc.capturelog.data.capture.Capture
+import com.rhc.capturelog.data.capture.CaptureTemplate
+import com.rhc.capturelog.data.capture.Tag
+import com.rhc.capturelog.data.capture.TagColor
+import com.rhc.capturelog.data.capture.TemplateIcon
+import com.rhc.capturelog.data.dailynote.DailyNote
+import com.rhc.capturelog.data.todo.QueueStatus
+import com.rhc.capturelog.data.todo.TodoItem
 import io.ktor.http.Url
 import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 inline fun <reified T : Any, reified U : Any> inlineValue(
     crossinline toDb: (T) -> U,
@@ -37,3 +47,39 @@ val instantAdapter = object : ColumnAdapter<Instant, Long> {
     override fun decode(databaseValue: Long): Instant = Instant.fromEpochMilliseconds(databaseValue)
     override fun encode(value: Instant): Long = value.toEpochMilliseconds()
 }
+
+val dailyNoteIdAdapter = inlineValue<DailyNote.Id, String>(
+    { it.value.toHexString() },
+    { DailyNote.Id(Uuid.parseHex(it)) }
+)
+
+val captureIdAdapter = inlineValue<Capture.Id, String>(
+    { it.value.toHexString() },
+    { Capture.Id(Uuid.parseHex(it)) }
+)
+
+val captureTemplateIdAdapter = inlineValue<CaptureTemplate.Id, String>(
+    { it.value.toHexString() },
+    { CaptureTemplate.Id(Uuid.parseHex(it)) }
+)
+
+val captureTemplateIconAdapter = enumIntValue<TemplateIcon>()
+
+val todoItemIdAdapter = inlineValue<TodoItem.Id, String>(
+    { it.value.toHexString() },
+    { TodoItem.Id(Uuid.parseHex(it)) }
+)
+
+val tagIdAdapter = inlineValue<Tag.Id, String>(
+    { it.value.toHexString() },
+    { Tag.Id(Uuid.parseHex(it)) }
+)
+
+val queueStatusAdapter = enumIntValue<QueueStatus>()
+
+val tagColorAdapter = enumIntValue<TagColor>()
+
+val colorLongAdapter = inlineValue<Color, Long>(
+    { it.value.toLong() },
+    { Color(it) }
+)
