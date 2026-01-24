@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.rhc.capturelog.features.dailynotes.DailyNotesScreen
+import com.rhc.capturelog.core.state.AppViewModel
+import com.rhc.capturelog.features.capture.DailyNoteScreen
 
 @Composable
 fun CaptureLogNavigation(
     paddingValues: PaddingValues,
+    appViewModel: AppViewModel,
     navController: NavHostController
 ) {
     NavHost(
@@ -17,7 +19,7 @@ fun CaptureLogNavigation(
         startDestination = Destination.Today
     ) {
         composable<Destination.Today> {
-            DailyNotesScreen(paddingValues)
+            DailyNoteScreen(appViewModel, paddingValues)
         }
         composable<Destination.Queue> {
             // QueueScreen

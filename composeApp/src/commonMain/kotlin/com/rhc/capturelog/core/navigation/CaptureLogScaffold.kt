@@ -32,15 +32,14 @@ import capturelog.composeapp.generated.resources.label_add_note
 import capturelog.composeapp.generated.resources.label_search
 import com.rhc.capturelog.core.state.AppViewModel
 import com.rhc.capturelog.core.state.TopAppBarState
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CaptureLogScaffold(
     navController: NavController,
+    appViewModel: AppViewModel,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val appViewModel: AppViewModel = koinViewModel()
     val appState = appViewModel.uiState.collectAsStateWithLifecycle()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

@@ -4,15 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rhc.capturelog.core.navigation.AppStateEvent
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
+import org.koin.android.annotation.KoinViewModel
 
-@Factory
+@KoinViewModel
 class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     companion object {
@@ -47,7 +48,10 @@ class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel()
         initialValue = AppState()
     )
 
-    private val _topBarEvents = MutableSharedFlow<AppStateEvent>()
+    private val _topBarEvents = MutableSharedFlow<AppStateEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val appStateEvents = _topBarEvents.asSharedFlow()
 
     fun updateState(block: AppState.() -> AppState) {
@@ -70,12 +74,11 @@ class AppViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel()
     }
     
     fun setTopBarActions(actions: (@androidx.compose.runtime.Composable () -> Unit)?) {
-         // Actions are not persistent state
     }
 
     fun emitAppStateEvent(event: AppStateEvent) {
         viewModelScope.launch {
-            _topBarEvents.emit(event)
+            _topBarEvents.tryEmit(event)
         }
     }
 }
