@@ -125,12 +125,9 @@ fun Destination.toBottomNavigationItem() = when (this) {
 
 inline fun <reified T : Any> NavBackStackEntry.toDestinationOrNull(): T? {
     val dest = destination
-
-    // Find the first class in our list that matches the current route
     val matchedDestination = Destination.allDestinations.find { destination ->
         dest.hasRoute(destination::class)
     } ?: return null
 
-    // Use the matched class to extract the route object
     return this.toRoute(matchedDestination::class) as? T
 }

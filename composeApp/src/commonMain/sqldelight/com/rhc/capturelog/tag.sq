@@ -1,5 +1,5 @@
-import com.rhc.capturelog.data.dailynote.Tag;
-import com.rhc.capturelog.data.dailynote.TagColor;
+import com.rhc.capturelog.data.capture.Tag;
+import com.rhc.capturelog.data.capture.TagColor;
 
 CREATE TABLE IF NOT EXISTS tag (
     id TEXT AS Tag.Id PRIMARY KEY NOT NULL,

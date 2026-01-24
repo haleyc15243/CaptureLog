@@ -1,6 +1,6 @@
 package com.rhc.capturelog.data.capture
 
-import com.rhc.capturelog.database.dailyNote.CaptureDataSource
+import com.rhc.capturelog.database.capture.CaptureDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow

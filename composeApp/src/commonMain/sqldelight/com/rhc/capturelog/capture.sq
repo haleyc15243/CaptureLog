@@ -1,7 +1,7 @@
-import com.rhc.capturelog.data.dailynote.Capture;
-import com.rhc.capturelog.data.dailynote.CaptureTemplate;
+import com.rhc.capturelog.data.capture.Capture;
+import com.rhc.capturelog.data.capture.CaptureTemplate;
 import com.rhc.capturelog.data.dailynote.DailyNote;
-import com.rhc.capturelog.data.dailynote.Tag;
+import com.rhc.capturelog.data.capture.Tag;
 import kotlin.time.Instant;
 
 CREATE TABLE IF NOT EXISTS capture (

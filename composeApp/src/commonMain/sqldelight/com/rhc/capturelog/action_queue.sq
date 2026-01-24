@@ -1,4 +1,4 @@
-import com.rhc.capturelog.data.dailynote.Tag;
+import com.rhc.capturelog.data.capture.Tag;
 import com.rhc.capturelog.data.todo.QueueStatus;
 import com.rhc.capturelog.data.todo.TodoItem;
 import kotlin.time.Instant;
